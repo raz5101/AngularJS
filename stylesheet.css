@@ -1,4 +1,19 @@
 body{
-	text-align: center;
-	color: blue;
+	width:600px;
+	margin: auto;
+}
+
+.small-image{
+	width:100px;
+	height:100px;
+}
+
+.img-wrap{
+/*	width: 400px;
+	height: 200px;
+*/	margin: auto;
+}
+
+.center{
+	margin: auto;
 }

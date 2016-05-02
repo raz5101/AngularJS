@@ -1,16 +1,95 @@
 <!DOCTYPE html>
-<html ng-app="myFirstApp">
+<html ng-app="store">
 	<head>
-		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.3/angular.min.js"></script>
+		<script type="text/javascript" src="app.js"></script>
+
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.6/spacelab/bootstrap.min.css">
 		<link rel="stylesheet" href="stylesheet.css">
 	</head>
-	<body>
-		<div>
-			<h1>AngularJS</h1>
-			<p>This is my first foray into AngularJS!</p>
+
+	<body ng-controller="StoreController as store">
+		<header>
+			<h1 class="text-center">The Supercar Superstore</h1>
+			<h2 class="text-center">- an Angular store -</h2>
+		</header>
+		<div class="list-group">
+			<div ng-repeat="product in store.products" class="list-group-item">
+				<h1> {{product.name}}
+					<em class="pull-right">{{product.price|currency}}</em>
+				</h1>
+
+<!-- Gallery -->
+
+				<div ng-controller="GalleryController as gallery"  ng-show="product.images.length">
+        			<img ng-src="{{product.images[gallery.currentImage]}}" />
+          			<ul class="img-thumbnails clearfix center">
+            			<li class="small-image pull-left thumbnail" ng-repeat="image in product.images track by $index">
+              				<a href="" ng-click="gallery.setCurrent($index)">
+              					<img ng-src="{{image}}" />
+              				</a>
+            			</li>
+          			</ul>
+				</div>
+
+<!-- This is the panel for the tabs (Description, Specifications, Reviews) -->
+
+				<section ng-controller="PanelController as panel">
+					<ul class="nav nav-pills">
+						<li ng-class="{active:panel.isSelected(1)}">
+							<a href ng-click="panel.selectTab(1)">Description</a>
+						</li>
+						<li ng-class="{active:panel.isSelected(2)}">
+							<a href ng-click="panel.selectTab(2)">Specifications</a>
+						</li>
+						<li ng-class="{active:panel.isSelected(3)}">
+							<a href ng-click="panel.selectTab(3)">Reviews ({{product.reviews.length}})</a>
+						</li>
+					</ul>
+					<div class="panel" ng-show="panel.isSelected(1)">
+						<h4>Description</h4>
+						<blockquote>{{product.description}}</blockquote>
+					</div>
+					<div class="panel" ng-show="panel.isSelected(2)">
+						<h4>Specifications</h4>
+						<blockquote>Not Available</blockquote>
+					</div>
+					<div class="panel" ng-show="panel.isSelected(3)">
+						<h4>Reviews</h4>
+						<blockquote ng-repeat="review in product.reviews">
+							<b>Stars: {{review.stars}}</b>
+							<cite class="clearfix">{{review.author}} says: "{{review.body}}"</cite>
+						</blockquote>
+
+<!-- Review Form -->
+
+						<form name="reviewForm" ng-controller="ReviewController as reviewCtrl" ng-submit="reviewCtrl.addReview(product)">
+							<h4>Submit a Review</h4>
+							<blockquote>
+								<b>Stars: {{reviewCtrl.review.stars}}</b>
+								<cite class="clearfix">{{reviewCtrl.review.author}} says: "{{reviewCtrl.review.body}}"</cite>
+							</blockquote>
+
+							<fieldset class="form-group">
+								<select ng-model="reviewCtrl.review.stars" class="form-control" ng-options="stars for stars in [5,4,3,2,1]" title="Stars">
+									<option value="">Rate the Product</option>
+	 							</select>
+							</fieldset>
+							<fieldset class="form-group">
+								<textarea ng-model="reviewCtrl.review.body" class="form-control" placeholder="Please write a short review of the product..." title="Review"></textarea>
+							</fieldset>
+							<fieldset class="form-group">
+								<input ng-model="reviewCtrl.review.author" class="form-control" placeholder="someone@example.com" title="Email" type="email" />
+							</fieldset>
+							<fieldset class="form-group">
+								<input type="submit" class="btn btn-primary pull-right" value="Submit Review"/>
+							</fieldset>
+						</form>
+					</div>
+				</section>
+			</div>
 		</div>
 	</body>
 </html>
